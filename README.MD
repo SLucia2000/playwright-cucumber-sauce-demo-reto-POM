@@ -42,11 +42,13 @@ npm install --save-dev @cucumber/cucumber ts-node typescript
        default: {
            require: ["./step-definitions/*.ts", "./support/hooks.ts"],
            requireModule: ["ts-node/register"],
-           format: ["progress-bar"],
+           format: ["progress-bar", "html:reports/cucumber-report.html"],
            publishQuiet: true
        },
    };
    ```
+
+Esta configuración permite generar un **reporte HTML** detallado en la carpeta `reports` tras la ejecución de las pruebas.
 
 ---
 
@@ -76,6 +78,12 @@ npm install --save-dev @cucumber/cucumber ts-node typescript
 │-- cucumber.js        # Configuración de Cucumber
 │-- package.json       # Configuración del proyecto
 │-- tsconfig.json      # Configuración de TypeScript
+│-- .gitignore         # Ignora archivos innecesarios
+```
+
+El archivo `.gitignore` **excluye la carpeta `node_modules`** para evitar que se suban dependencias innecesarias al repositorio. **Para ejecutar el proyecto después de clonar el repositorio, es necesario instalar las dependencias con:**
+```sh
+npm install
 ```
 
 ---
@@ -119,7 +127,9 @@ npx cucumber-js
 
 ### 🔹 Ejecutar una feature específica
 ```sh
-npx cucumber-js --tags "@checkout"
+npx cucumber-js features/cart.feature
+npx cucumber-js features/login.feature
+npx cucumber-js features/checkout.feature
 ```
 
 ### 🔹 Ejecutar en modo visual y con retraso (slow motion)
@@ -143,7 +153,7 @@ let browser: Browser;
 let page: Page;
 
 Before(async function () {
-    browser = await chromium.launch({ headless: false, slowMo: 500 });
+    browser = await chromium.launch({ headless: false, slowMo: 1000 });
     page = await browser.newPage();
     this.page = page;
 });
@@ -152,9 +162,9 @@ After(async function () {
     await browser.close();
 });
 ```
+Esta configuración de `slowMo: 1000` **reduce la velocidad de ejecución** para facilitar la observación de los pasos en el navegador.
 
 ---
 
 ## 📌 Conclusión
 Este proyecto demuestra cómo integrar **Playwright** con **Cucumber** utilizando **TypeScript**, siguiendo **buenas prácticas** de automatización con **POM**. Con esta arquitectura, las pruebas son **mantenibles, escalables y reutilizables** para futuros escenarios.
-
